@@ -8,7 +8,6 @@ export class AppController {
 
   @Post()
   async processTweet(@Body() tweet: string): Promise<void> {
-    this.logger.log(tweet)
     this.appService.processTweet(tweet);
   }
 }

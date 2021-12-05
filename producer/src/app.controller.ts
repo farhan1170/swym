@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Logger, Inject,Body } from '@nestjs/common';
+import { Controller, Get, Post, Logger, Inject, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Tweet } from './utils'
 
@@ -13,11 +13,13 @@ export class AppController {
   @Post()
   async addTweet(@Body() tweet: Tweet): Promise<String> {
     if (!tweet) {
-      throw new Error(`No tweet`)
+      throw new HttpException('bad request', HttpStatus.BAD_REQUEST);
     }
     this.logger.log('Tweet', tweet)
-    await this.appService.filterTweet(tweet)
-    
+    await this.appService.filterTweet(tweet).catch(e => {
+      throw new HttpException('bad request', HttpStatus.BAD_REQUEST);
+    })
+
     return (`Tweet accepted...`)
   }
 }

@@ -9,10 +9,11 @@ export class CountProcessor {
 
   }
   async counter(tweetObj: Tweet): Promise<void> {
+    //serch user name in redis format is {user_name: tweet_count}
     let data = await this.redisClient.get(tweetObj.user_name)
-    
+
     let count: number
-    if (!data) {
+    if (!data || !Number(data)) {
       count = 1
       await this.redisClient.set(tweetObj.user_name, count)
     } else {
@@ -21,6 +22,7 @@ export class CountProcessor {
         await this.redisClient.set(tweetObj.user_name, count)
       }
     }
+    //get constraint from redis
     let constraint = this.redisClient.get(`constraint`)
     if (!constraint || !Number(constraint)) {
       constraint = 1000
@@ -28,6 +30,8 @@ export class CountProcessor {
     if (count >= constraint) {
       this.logger.log(`Condition of ${constraint} is met by${tweetObj.user_name}`)
     }
-
+    else {
+      this.logger.log(`Condition of ${constraint} is NOT met by${tweetObj.user_name}`)
+    }
   }
 }
