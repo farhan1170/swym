@@ -34,4 +34,17 @@ export class CountProcessor {
       this.logger.log(`Condition of ${constraint} is NOT met by${tweetObj.user_name}`)
     }
   }
+  async getCount(tweetObj: Tweet): Promise<number> {
+
+    let data = await this.redisClient.get(tweetObj.user_name)
+    //this.logger.log('---------------', data)
+    if (!data || !Number(data)) {
+      await this.redisClient.set(tweetObj.user_name, 1)
+      return 1
+    }
+    else {
+      await this.redisClient.set(tweetObj.user_name, Number(data) + 1)
+      return Number(data) + 1
+    }
+  }
 }
