@@ -7,4 +7,8 @@ export class LocationProcessor {
   printLocation(tweetObj: Tweet): void {
     this.logger.log(`Location of tweet is ${tweetObj.location}`)
   }
+  getTemp(newT: Tweet): number {
+    return 10
+  }
+
 }
